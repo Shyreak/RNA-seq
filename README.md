@@ -1,4 +1,4 @@
-# Title: RNA-seq Differential Gene Expression Workflow  
+# RNA-seq Differential Gene Expression Workflow  
 
 ### Author: Ziwen Xie  
 
