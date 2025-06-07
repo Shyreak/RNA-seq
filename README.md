@@ -1,16 +1,15 @@
-# RNA-seq Differential Gene Expression Workflow  
+# Title: RNA-seq Differential Gene Expression Workflow  
 
 ### Author: Ziwen Xie  
 
 ## Abstract:  
 
-This article details the entire process of RNA-seq data from download to analysis, including installing miniconda, creating a virtual environment, downloading and installing bioinformatics software, downloading data, data quality checking, raw data pruning, alignment, and calculating RNA expression. The workflow consists of six main steps:  
+RNA-seq has emerged as one of the most prominent methods for measuring cellular responses. Not only can RNA-seq analyze differences in gene expression between samples, but it can also discover novel isoforms and analyze SNP variations. This workflow outlines the fundamental steps for processing and analyzing differential gene expression data, providing a universal approach for setting up environments and running alignment tools. The workflow consists of five main steps:  
 1. Install Miniconda  
-2. Install necessary Conda packages
-3. Create a virtual environment
-4. Analyze sequence quality with FastQC  
-5. Raw data pruning with Trim_Galore  
-6. Calculate the amount of RNA expression
+2. Install necessary Conda packages  
+3. Analyze sequence quality with FastQC  
+4. Remove low-quality sequences with Trim_Galore  
+5. Eliminate rRNA sequences using SortMeRNA  
 
 ## Introduction:  
 
@@ -27,69 +26,59 @@ The dataset used includes a sample file from the EBI database and SortMeRNA's rR
 git clone https://github.com/Shyreak/RNA-seq
 ```
 
-2. **Run the following script to install Miniconda**  
+2. **Build a virtual environment using Dockerfile (Ubuntu)**  
 ```sh
- wget -c  https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/Miniconda3-latest-Linux-x86_64.sh
-```
-Or download it from the official website as you like
-
-```sh
- wget -c https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+cd RNA-seq/
+docker build -t rna .
 ```
 
-For those in China, Switching to Tsinghua mirror source is highly recommended.
+3. **Run the first script to install Miniconda in the virtual environment**  
 ```sh
-conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free
-conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/
-conda config --set show_channel_urls yes
-pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+# Clone the repository into the virtual environment
+git clone https://github.com/Shyreak/RNA-seq
+cd RNA-seq/
+bash 1_Miniconda.sh 
 ```
-3. **Create a virtual environment**
-conda create -n rna python=3 
 
-conda info --envs 
-
-source activate rna 
-conda activate rna 
-
- source deactivate 
-
-conda config --set auto_activate_base false
-
-4. **Install necessary Conda packages**  
+4. **Run the second script to download sample files and install Conda packages**  
 ```shell
-conda search sra 
-
-conda install -y sra-tools
-conda install -y trimmomatic
-conda install -y cutadapt multiqc 
-conda install -y trim-galore
-conda install -y star hisat2 bowtie2
-conda install -y subread tophat htseq bedtools deeptools
-conda install -y salmon
+source ~/.bashrc
+bash 2_Environment.sh 
 ```
 
-5. **Download data**  
-Create a new document named SRR_Acc_List.txt and save the SRR number in the document, with one number occupying one line.
-Set the directory first.
-```shell
-wkd=/lab/project
-cd /lab/project
-
-cat SRR_Acc_List.txt | while read id; do (prefetch  ${id} &);done
-```
-
-6. **Test data quality**  
+5. **Run the third script for sequence quality analysis with FastQC**  
 Command format:  
 ```shell
-cd $wkd/
+bash 3_Analyse.sh <sample.fq> 
+```  
+Example:  
+```sh
+bash 3_Analyse.sh input/sample.fastq.gz
+```  
+Output:  
+```
+── results/1_initial_qc/
+    └── sample_fastqc.html   <- HTML report of FastQC quality analysis
+    └── sample_fastqc.zip    <- FastQC report data
+```
 
-fastq-dump *.sra
-
-fastqc *.fastq
-
-multiqc *.zip
-
+6. **Run the fourth script to remove low-quality sequences with Trim_Galore**  
+Command format:  
+```shell
+bash 4_Remove.sh <sample.fa>
+```  
+Example:  
+```shell
+bash 4_Remove.sh input/sample.fastq.gz
+```  
+Manual alternative:  
+```shell
+trim_galore \
+--quality 20 \
+--fastqc \
+--length 25 \
+--output_dir results/2_trimmed_output/ \
+input/sample.fastq.gz
 ```  
 Output:  
 ```
@@ -168,10 +157,11 @@ Output:
 ## Discussion:  
 
 **Key project aspects:**  
-Utilized FastQC, Trim_Galore for processing target genes, generating:  
+Utilized FastQC, Trim_Galore, and SortMeRNA for processing target genes, generating:  
 - FastQC quality analysis reports  
 - Quality reports for low-quality sequence removal  
 - Trim_Galore trimming reports  
+- SortMeRNA removal reports  
 
 **Limitations:**  
 - Limited processing methods for target gene samples  
@@ -194,4 +184,19 @@ Utilized FastQC, Trim_Galore for processing target genes, generating:
 
 ## Appendix:  
 
-Core scripts and Dockerfile available on GitHub.
+Core scripts and Dockerfile available on GitHub:  
+https://github.com/cyny666/RNA-seq  
+
+**File Structure:**  
+```
+RNA-seq/
+├── 1_Miniconda.sh
+├── 2_Environment.sh
+├── 3_Analyse.sh
+├── 4_Remove.sh
+├── 5_SortMeRNA.sh
+├── Dockerfile
+├── input/
+│   └── sample.fastq.gz
+└── README.md
+```
