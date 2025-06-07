@@ -37,39 +37,37 @@ docker build -t rna .
 # Clone the repository into the virtual environment
 git clone https://github.com/Shyreak/RNA-seq
 cd RNA-seq/
-bash 1_Miniconda.sh 
+bash Miniconda.sh 
 ```
 
 4. **Run the second script to download sample files and install Conda packages**  
 ```shell
 source ~/.bashrc
-bash 2_Environment.sh 
+bash Environment.sh 
 ```
 
 5. **Run the third script for sequence quality analysis with FastQC**  
 Command format:  
 ```shell
-bash 3_Analyse.sh <sample.fq> 
+bash Analyse.sh <sample.fq> 
 ```  
 Example:  
 ```sh
-bash 3_Analyse.sh input/sample.fastq.gz
+bash Analyse.sh input/sample.fastq.gz
 ```  
 Output:  
 ```
-── results/1_initial_qc/
-    └── sample_fastqc.html   <- HTML report of FastQC quality analysis
-    └── sample_fastqc.zip    <- FastQC report data
+
 ```
 
 6. **Run the fourth script to remove low-quality sequences with Trim_Galore**  
 Command format:  
 ```shell
-bash 4_Remove.sh <sample.fa>
+bash Remove.sh <sample.fa>
 ```  
 Example:  
 ```shell
-bash 4_Remove.sh input/sample.fastq.gz
+bash Remove.sh input/sample.fastq.gz
 ```  
 Manual alternative:  
 ```shell
@@ -82,11 +80,7 @@ input/sample.fastq.gz
 ```  
 Output:  
 ```
-── results/2_trimmed_output/
-     └── sample_trimmed.fq                 <- Trimmed sequencing file (.fastq)
-     └── sample_trimmed.html               <- HTML quality report
-     └── sample_trimmed.zip                <- Quality report data
-     └── sample.fastq.trimming_report.txt  <- Cutadapt trimming report
+
 ```
 
 7. **Run the fifth script to build index database and remove rRNA sequences with SortMeRNA**  
@@ -122,10 +116,7 @@ bash 5_SortMeRNA.sh $sortmernaREF
 ```  
 Output:  
 ```
-── results/4_aligned_sequences/
-    └── aligned_bam/sampleAligned.sortedByCoord.out.bam   <- Sorted BAM alignment file
-    └── aligned_logs/sampleLog.final.out                  <- STAR alignment rate log
-    └── aligned_logs/sampleLog.out                        <- STAR alignment process log
+
 ```
 
 ## Results:  
