@@ -4,12 +4,13 @@
 
 ## Abstract:  
 
-RNA-seq has emerged as one of the most prominent methods for measuring cellular responses. Not only can RNA-seq analyze differences in gene expression between samples, but it can also discover novel isoforms and analyze SNP variations. This workflow outlines the fundamental steps for processing and analyzing differential gene expression data, providing a universal approach for setting up environments and running alignment tools. The workflow consists of five main steps:  
+This article details the entire process of RNA-seq data from download to analysis, including installing miniconda, creating a virtual environment, downloading and installing bioinformatics software, downloading data, data quality checking, raw data pruning, alignment, and calculating RNA expression. The workflow consists of six main steps:  
 1. Install Miniconda  
-2. Install necessary Conda packages  
-3. Analyze sequence quality with FastQC  
-4. Remove low-quality sequences with Trim_Galore  
-5. Eliminate rRNA sequences using SortMeRNA  
+2. Install necessary Conda packages
+3. Create a virtual environment
+4. Analyze sequence quality with FastQC  
+5. Raw data pruning with Trim_Galore  
+6. Calculate the amount of RNA expression
 
 ## Introduction:  
 
