@@ -66,7 +66,7 @@ htseq bedtools deeptools salmon
 
 #### 1. 数据下载
 ```bash
-wkd=/home/xzw/project/airway/
+wkd=/lab/project/airway/
 cd $wkd
 
 # 批量下载SRA数据
@@ -86,7 +86,7 @@ multiqc *.zip
 
 #### 3. 数据修剪
 ```bash
-clean_dir='/home/xzw/project/clean/'
+clean_dir='/lab/project/clean/'
 mkdir -p $clean_dir
 
 for id in SRR957677 SRR957678 SRR957679 SRR957680; do
@@ -98,9 +98,9 @@ done
 
 #### 4. 序列比对
 ```bash
-aligned_dir='/home/xzw/project/aligned/'
+aligned_dir='/lab/project/aligned/'
 mkdir -p $aligned_dir
-genome_index='/home/xzw/project/1hg19/genome'
+genome_index='/lab/project/1hg19/genome'
 
 for id in SRR957677 SRR957678 SRR957679 SRR957680; do
     hisat2 -x $genome_index -p 8 \
@@ -111,7 +111,7 @@ done
 
 #### 5. 基因表达定量
 ```bash
-gtf_file='/home/xzw/project/gencode.v29.annotation.gtf'
+gtf_file='/lab/project/gencode.v29.annotation.gtf'
 
 for id in SRR957677 SRR957678 SRR957679 SRR957680; do
     featureCounts -T 8 -a $gtf_file \
@@ -120,7 +120,7 @@ for id in SRR957677 SRR957678 SRR957679 SRR957680; do
 done
 ```
 
-## 结果
+## 结果（具体见Github文件）
 
 ### 数据质量评估
 FastQC分析结果显示：
@@ -215,9 +215,7 @@ for fq in $wkd/clean/*_trimmed.fq.gz; do
 done
 
 # 5. 基因表达定量
-gtf="/home/xzw/project/gencode.v29.annotation.gtf"
+gtf="/lab/project/gencode.v29.annotation.gtf"
 featureCounts -T 8 -a $gtf -o $wkd/counts.txt \
 -t exon -g gene_id $wkd/aligned/*.sam
 ```
-
-详细结果见https://github.com/Shyreak/RNA-seq
